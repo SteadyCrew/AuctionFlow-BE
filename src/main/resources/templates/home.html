@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <style>
+        .login-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #FFEB00;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+<h1>Welcome to the Home Page!</h1>
+<p>Please login with Kakao to continue.</p>
+<a class="login-button" th:href="@{/oauth2/authorization/kakao}">Login with Kakao</a>
+</body>
+</html>
