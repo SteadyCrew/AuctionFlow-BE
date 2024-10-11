@@ -32,6 +32,9 @@ public class MyPageController {
         String email = oauth2User.getAttribute("email");
         User user = userService.findUserByEmail(email);
 
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
         return storeService.createStore(user, storeDTO);
     }
     @PatchMapping("/{storeId}")
