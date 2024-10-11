@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.Set;
 
 @Entity
-@Table(name = "chat_room")
+@Table(name = "chat_rooms")
 @Getter
 @Setter
 public class ChatRoom {
