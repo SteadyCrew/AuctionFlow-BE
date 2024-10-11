@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "item_image")
+@Table(name = "item_images")
 @Getter
 @Setter
 public class ItemImage {
