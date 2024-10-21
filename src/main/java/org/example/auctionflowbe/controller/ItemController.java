@@ -60,4 +60,9 @@ public class ItemController {
         return itemService.getItemById(itemId);
     }
 
+    @GetMapping
+    public ResponseEntity<List<ItemResponse>> getAllItems() {
+        List<ItemResponse> items = itemService.getAllItemResponses();
+        return ResponseEntity.ok(items);
+    }
 }

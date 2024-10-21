@@ -72,6 +72,13 @@ public class ItemService {
                 .orElseThrow(() -> new RuntimeException("Item not found with id: " + itemId));
         return mapToItemResponse(item);
     }
+    // 모든 아이템 dto 을 조회하는 메서드 추가
+    public List<ItemResponse> getAllItemResponses() {
+        List<Item> items = itemRepository.findAll();
+        return items.stream()
+                .map(this::mapToItemResponse)
+                .collect(Collectors.toList());
+    }
     // 엔티티를 DTO로 변환하는 메서드
     private ItemResponse mapToItemResponse(Item item) {
         ItemResponse response = new ItemResponse();
