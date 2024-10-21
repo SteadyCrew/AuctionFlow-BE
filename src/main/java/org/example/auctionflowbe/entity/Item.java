@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,7 +29,9 @@ public class Item {
     @JoinColumn(name = "user_id")
     private User user; // 판매자
 
-    private String productImageUrl;
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemImage> productImages;  // 여러 이미지 URL을 저장하기 위한 필드
+
     private String title;
     private String productStatus; // 상품 상태 => 깨끗함 정도
     private String description;
