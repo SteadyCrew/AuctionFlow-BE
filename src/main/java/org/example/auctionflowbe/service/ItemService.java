@@ -4,27 +4,37 @@ import org.example.auctionflowbe.dto.ItemCreateRequest;
 import org.example.auctionflowbe.dto.ItemResponse;
 import org.example.auctionflowbe.entity.Category;
 import org.example.auctionflowbe.entity.Item;
+import org.example.auctionflowbe.entity.ItemImage;
 import org.example.auctionflowbe.entity.User;
 import org.example.auctionflowbe.repository.CategoryRepository;
 import org.example.auctionflowbe.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private S3Service s3Service;
+
     // 상품 등록 메서드
     public ItemResponse registerItem(User user, ItemCreateRequest itemCreateRequest) {
         Item item = new Item();
-        // CategoryRepository를 통해 카테고리를 조회하고 Item에 설정
+        // 카테고리 설정
         Category category = categoryRepository.findById(itemCreateRequest.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + itemCreateRequest.getCategoryId()));
         item.setCategory(category);
+        // 사용자 설정
         item.setUser(user);
-        item.setProductImageUrl(itemCreateRequest.getProductImageUrl());
+
         item.setTitle(itemCreateRequest.getTitle());
         item.setProductStatus(itemCreateRequest.getProductStatus());
         item.setDescription(itemCreateRequest.getDescription());
@@ -33,6 +43,26 @@ public class ItemService {
         item.setUpdatedAt(LocalDateTime.now());
         item.setAuctionEndTime(itemCreateRequest.getAuctionEndTime());
         item.setItemBidStatus(itemCreateRequest.getItemBidStatus());
+
+        // 이미지 업로드 및 URL 설정
+        List<String> imageUrls;
+        try {
+            imageUrls = s3Service.uploadFiles(itemCreateRequest.getProductImageFiles(), "item-images");
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload images", e);
+        }
+        // 이미지 엔티티 생성
+        List<ItemImage> itemImages = itemCreateRequest.getProductImageFiles().stream()
+                .map(file -> {
+                    String imageUrl = imageUrls.get(itemCreateRequest.getProductImageFiles().indexOf(file));
+                    ItemImage itemImage = new ItemImage();
+                    itemImage.setImageUrl(imageUrl);
+                    itemImage.setItem(item);
+                    return itemImage;
+                })
+                .collect(Collectors.toList());
+        item.setProductImages(itemImages);
+        // 아이템 저장
         Item savedItem = itemRepository.save(item);
         return mapToItemResponse(savedItem);
     }
@@ -46,10 +76,11 @@ public class ItemService {
     private ItemResponse mapToItemResponse(Item item) {
         ItemResponse response = new ItemResponse();
         response.setItemId(item.getItemId());
-        // Category ID를 응답에 포함
-        response.setCategoryId(item.getCategory().getCategoryId());
-        response.setUserId(item.getUser().getUserId());
-        response.setProductImageUrl(item.getProductImageUrl());
+        response.setCategoryId(item.getCategory().getCategoryId()); // 카테고리 이름 설정
+        response.setUserId(item.getUser().getUserId()); // 사용자 이름 설정
+        response.setProductImageUrls(item.getProductImages().stream()
+                .map(ItemImage::getImageUrl)
+                .collect(Collectors.toList()));
         response.setTitle(item.getTitle());
         response.setProductStatus(item.getProductStatus());
         response.setDescription(item.getDescription());
