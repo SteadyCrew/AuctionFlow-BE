@@ -28,4 +28,9 @@ public class UserService {
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public User findTestUserById() {
+        Long userId = 26L; // 테스트용
+        return userRepository.findByUserId(userId);
+    }
 }

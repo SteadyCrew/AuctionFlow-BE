@@ -24,11 +24,13 @@ public class SecurityConfig {
         http.csrf((csrf) -> csrf.disable());
 
         http
+
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/", "/login**", "/oauth2/**", "/error").permitAll()
                                 //.requestMatchers("/items/**","/api/**").authenticated()
                                 .requestMatchers("/ws/**").authenticated()
+                                .requestMatchers("/mypage/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/items/**").permitAll() // GET 메서드로 /items/** 접근은 인증 없이 가능
                                 .requestMatchers(HttpMethod.POST, "/items/**").authenticated() // POST 메서드로 /items/** 접근은 인증 필요
                                 .requestMatchers("/api/**").authenticated()

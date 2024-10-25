@@ -1,6 +1,7 @@
 package org.example.auctionflowbe.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.example.auctionflowbe.dto.ItemResponse;
 import org.example.auctionflowbe.entity.Bid;
@@ -31,7 +32,18 @@ public class MyListService {
         ItemResponse itemResponse = new ItemResponse();
         itemResponse.setItemId(item.getItemId());
         itemResponse.setCategoryId(item.getCategory().getCategoryId());
-
+        itemResponse.setUserId(item.getUser().getUserId());
+        itemResponse.setProductImageUrls(item.getProductImages().stream()
+            .map(itemImage -> itemImage.getImageUrl())
+            .collect(Collectors.toList()));
+        itemResponse.setTitle(item.getTitle());
+        itemResponse.setProductStatus(item.getProductStatus());
+        itemResponse.setDescription(item.getDescription());
+        itemResponse.setStartingBid(item.getStartingBid());
+        itemResponse.setCreatedAt(item.getCreatedAt());
+        itemResponse.setUpdatedAt(item.getUpdatedAt());
+        itemResponse.setAuctionEndTime(item.getAuctionEndTime());
+        itemResponse.setItemBidStatus(item.getItemBidStatus());
         return itemResponse;
     }
 
