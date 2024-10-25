@@ -6,9 +6,11 @@ import java.util.stream.Collectors;
 import org.example.auctionflowbe.dto.ItemResponse;
 import org.example.auctionflowbe.entity.Bid;
 import org.example.auctionflowbe.entity.Item;
+import org.example.auctionflowbe.entity.Like;
 import org.example.auctionflowbe.entity.User;
 import org.example.auctionflowbe.repository.BidRepository;
 import org.example.auctionflowbe.repository.ItemRepository;
+import org.example.auctionflowbe.repository.LikeRepository;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class MyListService {
 
     private final ItemRepository itemRepository;
     private final BidRepository bidRepository;
+    private final LikeRepository likeRepository;
 
     public List<Item> getMyItemList(User user) {
         List<Bid> bids = bidRepository.findByUser(user);
@@ -49,6 +52,14 @@ public class MyListService {
         itemResponse.setAuctionEndTime(item.getAuctionEndTime());
         itemResponse.setItemBidStatus(item.getItemBidStatus());
         return itemResponse;
+    }
+
+    // 찜 목록 조회
+    public List<ItemResponse> getLikeList(User user){
+        List<Like> likes = likeRepository.findByUser(user);
+        return likes.stream()
+            .map(like -> convertItemToItemResponse(like.getItem()))
+            .collect(Collectors.toList());
     }
 
 }
