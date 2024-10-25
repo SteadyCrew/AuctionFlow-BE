@@ -95,5 +95,17 @@ public class MyListController {
             .collect(Collectors.toList());
     }
 
+    // 찜 목록 조회
+    @GetMapping("/like")
+    public List<ItemResponse> myLikeList(@AuthenticationPrincipal OAuth2User oAuth2User){
+
+        User user = userService.findTestUserById();
+
+        if (user == null) {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+        return myListService.getLikeList(user);
+    }
+
 
 }
