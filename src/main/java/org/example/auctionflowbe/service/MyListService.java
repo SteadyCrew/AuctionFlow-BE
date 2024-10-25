@@ -2,6 +2,7 @@ package org.example.auctionflowbe.service;
 
 import java.util.List;
 
+import org.example.auctionflowbe.dto.ItemResponse;
 import org.example.auctionflowbe.entity.Bid;
 import org.example.auctionflowbe.entity.Item;
 import org.example.auctionflowbe.entity.User;
@@ -24,6 +25,14 @@ public class MyListService {
             .map(Bid::getItem)
             .distinct()
             .toList();
+    }
+
+    public ItemResponse convertItemToItemResponse(Item item) {
+        ItemResponse itemResponse = new ItemResponse();
+        itemResponse.setItemId(item.getItemId());
+        itemResponse.setCategoryId(item.getCategory().getCategoryId());
+
+        return itemResponse;
     }
 
 }
