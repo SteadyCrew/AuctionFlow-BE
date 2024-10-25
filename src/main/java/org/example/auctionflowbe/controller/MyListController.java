@@ -63,4 +63,37 @@ public class MyListController {
 
     }
 
+    @GetMapping("/sell")
+    public List<ItemResponse> mySellList(
+        @AuthenticationPrincipal OAuth2User oAuth2User,
+        @RequestParam(required = false) Integer statusType) {
+        // String email = oAuth2User.getAttribute("email");
+        // User user = userService.findUserByEmail(email);
+
+        User user = userService.findTestUserById();
+        if (user == null) {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+
+        List<Item> items = myListService.getSellList(user);
+
+        // statusType null : 전체, 1 : 진행 중(item_bid_status : active), 2: 경매 종료(item_bid_status : end)
+        final String statusFilter;
+        if (statusType == null) {
+            statusFilter = null; // statusType이 null일 경우 전체를 반환
+        } else if (statusType == 1) {
+            statusFilter = "active";
+        } else if (statusType == 2) {
+            statusFilter = "end";
+        } else {
+            throw new IllegalArgumentException("잘못된 statusType 값입니다.");
+        }
+
+        return items.stream()
+            .filter(item -> statusFilter == null || item.getItemBidStatus().equals(statusFilter))
+            .map(myListService::convertItemToItemResponse)
+            .collect(Collectors.toList());
+    }
+
+
 }
