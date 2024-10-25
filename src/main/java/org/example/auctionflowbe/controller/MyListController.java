@@ -14,6 +14,7 @@ import org.example.auctionflowbe.service.MyListService;
 import org.example.auctionflowbe.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -105,7 +106,8 @@ public class MyListController {
 
     // 찜 목록 조회
     @GetMapping("/like")
-    public List<ItemResponse> myLikeList(@AuthenticationPrincipal OAuth2User oAuth2User){
+    public List<ItemResponse> myLikeList(
+        @AuthenticationPrincipal OAuth2User oAuth2User){
 
         User user = userService.findTestUserById(); // 임시 인가
 
@@ -117,7 +119,9 @@ public class MyListController {
 
     // 상품 찜하기
     @PostMapping("/like")
-    public void addLike(@AuthenticationPrincipal OAuth2User oAuth2User, @RequestBody LikeRequest likeRequest) {
+    public void addLike(
+        @AuthenticationPrincipal OAuth2User oAuth2User,
+        @RequestBody LikeRequest likeRequest) {
 
         User user = userService.findTestUserById(); // 임시 인가
 
@@ -136,5 +140,22 @@ public class MyListController {
         myListService.saveLike(user, item);
     }
 
+    // 상품 찜 삭제
+    @DeleteMapping("/like")
+    public String removeLike(
+        @AuthenticationPrincipal OAuth2User oAuth2User,
+        @RequestBody LikeRequest likeRequest) {
+
+        User user = userService.findTestUserById(); // 임시 인가
+
+        if (user == null) {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+
+        Item item = itemRepository.findById(likeRequest.getItemId())
+            .orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다."));
+
+        return myListService.removeLike(user, item);
+    }
 
 }
