@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BidRepository extends JpaRepository<Bid, Long> {
     List<Bid> findByUser(User user);
+
+    List<Bid> findByItem_ItemId(Long itemId);
 }

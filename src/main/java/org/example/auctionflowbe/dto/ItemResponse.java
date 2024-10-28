@@ -12,7 +12,7 @@ import java.util.List;
 public class ItemResponse {
     private Long itemId;
     private Long categoryId;
-    private Long userId;
+    private Long sellerId;
     private List<String> productImageUrls;  // 여러 이미지 URL을 담는 리스트로 변경
     private String title;
     private String productStatus;
