@@ -57,7 +57,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemResponse getItemById(@PathVariable Long itemId) {
-        return itemService.getItemById(itemId);
+        return itemService.getItemDtoById(itemId);
     }
 
     @GetMapping

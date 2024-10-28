@@ -33,7 +33,8 @@ public class ItemService {
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + itemCreateRequest.getCategoryId()));
         item.setCategory(category);
         // 사용자 설정
-        item.setUser(user);
+        item.setSeller(user);
+        item.setBuyer(null);
 
         item.setTitle(itemCreateRequest.getTitle());
         item.setProductStatus(itemCreateRequest.getProductStatus());
@@ -42,7 +43,7 @@ public class ItemService {
         item.setCreatedAt(LocalDateTime.now());
         item.setUpdatedAt(LocalDateTime.now());
         item.setAuctionEndTime(itemCreateRequest.getAuctionEndTime());
-        item.setItemBidStatus(itemCreateRequest.getItemBidStatus());
+        item.setItemBidStatus("active");
 
         // 이미지 업로드 및 URL 설정
         List<String> imageUrls;
@@ -66,8 +67,8 @@ public class ItemService {
         Item savedItem = itemRepository.save(item);
         return mapToItemResponse(savedItem);
     }
-    // 상품 ID로 조회 메서드
-    public ItemResponse getItemById(Long itemId) {
+    // 상품 ID로 DTO 조회 메서드
+    public ItemResponse getItemDtoById(Long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found with id: " + itemId));
         return mapToItemResponse(item);
@@ -79,12 +80,27 @@ public class ItemService {
                 .map(this::mapToItemResponse)
                 .collect(Collectors.toList());
     }
+    public Item getItemById(Long itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다: " + itemId));
+    }
+
+    // 모든 Item 엔티티를 반환하는 메서드
+    public List<Item> getAllItems() {
+        return itemRepository.findAll();
+    }
+
+    // 아이템을 저장하는 메서드 추가
+    public Item saveItem(Item item) {
+        return itemRepository.save(item);
+    }
+
     // 엔티티를 DTO로 변환하는 메서드
     private ItemResponse mapToItemResponse(Item item) {
         ItemResponse response = new ItemResponse();
         response.setItemId(item.getItemId());
         response.setCategoryId(item.getCategory().getCategoryId()); // 카테고리 이름 설정
-        response.setUserId(item.getUser().getUserId()); // 사용자 이름 설정
+        response.setSellerId(item.getSeller().getUserId()); // 사용자 이름 설정
         response.setProductImageUrls(item.getProductImages().stream()
                 .map(ItemImage::getImageUrl)
                 .collect(Collectors.toList()));

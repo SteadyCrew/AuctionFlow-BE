@@ -34,14 +34,14 @@ public class MyListService {
     }
 
     public List<Item> getSellList(User user) {
-        return itemRepository.findByUser(user);
+        return itemRepository.findBySeller(user);
     }
 
     public ItemResponse convertItemToItemResponse(Item item) {
         ItemResponse itemResponse = new ItemResponse();
         itemResponse.setItemId(item.getItemId());
         itemResponse.setCategoryId(item.getCategory().getCategoryId());
-        itemResponse.setUserId(item.getUser().getUserId());
+        itemResponse.setSellerId(item.getSeller().getUserId());
         itemResponse.setProductImageUrls(item.getProductImages().stream()
             .map(itemImage -> itemImage.getImageUrl())
             .collect(Collectors.toList()));

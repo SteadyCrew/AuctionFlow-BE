@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bids", uniqueConstraints = {
+        //item_id와 bidAmount 컬럼의 조합이 고유(Unique)하도록 제한/ 동시성 문제 해결
         @UniqueConstraint(columnNames = {"item_id", "bidAmount"})
 })
 @Getter
