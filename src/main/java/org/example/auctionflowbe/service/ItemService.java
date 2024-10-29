@@ -67,12 +67,14 @@ public class ItemService {
         Item savedItem = itemRepository.save(item);
         return mapToItemResponse(savedItem);
     }
+
     // 상품 ID로 DTO 조회 메서드
     public ItemResponse getItemDtoById(Long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found with id: " + itemId));
         return mapToItemResponse(item);
     }
+
     // 모든 아이템 dto 을 조회하는 메서드 추가
     public List<ItemResponse> getAllItemResponses() {
         List<Item> items = itemRepository.findAll();
@@ -80,6 +82,7 @@ public class ItemService {
                 .map(this::mapToItemResponse)
                 .collect(Collectors.toList());
     }
+
     public Item getItemById(Long itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다: " + itemId));
@@ -113,5 +116,13 @@ public class ItemService {
         response.setAuctionEndTime(item.getAuctionEndTime());
         response.setItemBidStatus(item.getItemBidStatus());
         return response;
+    }
+
+    // 상품 검색 기능
+    public List<ItemResponse> itemSearchByName(String keyword) {
+        List<Item> items = itemRepository.findByTitleContainingOrDescriptionContaining(keyword, keyword);
+        return items.stream()
+            .map(this::mapToItemResponse)
+            .collect(Collectors.toList());
     }
 }
