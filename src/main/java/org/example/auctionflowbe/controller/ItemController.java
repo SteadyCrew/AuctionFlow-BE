@@ -65,4 +65,14 @@ public class ItemController {
         List<ItemResponse> items = itemService.getAllItemResponses();
         return ResponseEntity.ok(items);
     }
+
+    // 상품 검색
+    @GetMapping("/search")
+    public ResponseEntity<?> searchItems(@RequestParam String keyword) {
+        List<ItemResponse> items = itemService.itemSearchByName(keyword);
+        if (items.isEmpty()) {
+            return ResponseEntity.ok("해당하는 상품이 없습니다");
+        }
+        return ResponseEntity.ok(items);
+    }
 }
