@@ -29,8 +29,8 @@ public class MyPageController {
     public StoreDTO createStore(
         @AuthenticationPrincipal OAuth2User oauth2User,
         @RequestBody StoreDTO storeDTO) {
-        String email = oauth2User.getAttribute("email");
-        User user = userService.findUserByEmail(email);
+
+        User user = userService.findTestUserById(); // 임시 인가
 
         if (user == null) {
             throw new RuntimeException("User not found");
@@ -45,6 +45,7 @@ public class MyPageController {
     public StoreDTO getStore(@PathVariable Long storeId) {
         return storeService.getStore(storeId);
     }
+
     @DeleteMapping("/{storeId}")
     public void deleteStore(@PathVariable Long storeId) {
         storeService.deleteStore(storeId);

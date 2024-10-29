@@ -40,8 +40,8 @@ public class ItemController {
         ItemCreateRequest itemCreateRequest = objectMapper.readValue(itemJson, ItemCreateRequest.class);
 
         // 사용자 확인 및 처리
-        String email = oauth2User.getAttribute("email");
-        User user = userService.findUserByEmail(email);
+        User user = userService.findTestUserById(); // 임시 인가
+
         if (user == null) {
             throw new RuntimeException("User not found");
         }

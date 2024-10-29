@@ -28,6 +28,7 @@ public class AuctionController {
         List<BidDTO> bidDTOs = auctionService.findBidsByItemId(itemId);
         return ResponseEntity.ok(bidDTOs);
     }
+
     //사용자 인증 후 itemId와 bidAmount 를 받아서 입찰을 진행
     @PostMapping("/bid")
     public ResponseEntity<?> placeBid(
@@ -35,8 +36,11 @@ public class AuctionController {
             @RequestParam Long itemId,
             @RequestParam BigDecimal bidAmount) {
 
-        String email = oauth2User.getAttribute("email");
-        User user = userService.findUserByEmail(email);
+        // String email = oauth2User.getAttribute("email");
+        // User user = userService.findUserByEmail(email);
+
+        User user = userService.findTestUserById(); // 임시 인가
+
         if (user == null) {
             return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
         }
@@ -48,19 +52,22 @@ public class AuctionController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     //임의로 경매를 종료시키는 api
     @PostMapping("/end/{itemId}")
     public ResponseEntity<?> endAuction(
             @AuthenticationPrincipal OAuth2User oauth2User,
             @PathVariable Long itemId) {
         try {
-            String email = oauth2User.getAttribute("email");
-            User currentUser = userService.findUserByEmail(email);
-            if (currentUser == null) {
+            // String email = oauth2User.getAttribute("email");
+            // User user = userService.findUserByEmail(email);
+            User user = userService.findTestUserById(); // 임시 인가
+
+            if (user == null) {
                 return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
             }
 
-            String message = auctionService.endAuction(itemId, currentUser);
+            String message = auctionService.endAuction(itemId, user);
             return ResponseEntity.ok(message);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
