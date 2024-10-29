@@ -40,8 +40,8 @@ public class ItemController {
         ItemCreateRequest itemCreateRequest = objectMapper.readValue(itemJson, ItemCreateRequest.class);
 
         // 사용자 확인 및 처리
-        String email = oauth2User.getAttribute("email");
-        User user = userService.findUserByEmail(email);
+        User user = userService.findTestUserById(); // 임시 인가
+
         if (user == null) {
             throw new RuntimeException("User not found");
         }
@@ -63,6 +63,16 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<List<ItemResponse>> getAllItems() {
         List<ItemResponse> items = itemService.getAllItemResponses();
+        return ResponseEntity.ok(items);
+    }
+
+    // 상품 검색
+    @GetMapping("/search")
+    public ResponseEntity<?> searchItems(@RequestParam String keyword) {
+        List<ItemResponse> items = itemService.itemSearchByName(keyword);
+        if (items.isEmpty()) {
+            return ResponseEntity.ok("해당하는 상품이 없습니다");
+        }
         return ResponseEntity.ok(items);
     }
 }

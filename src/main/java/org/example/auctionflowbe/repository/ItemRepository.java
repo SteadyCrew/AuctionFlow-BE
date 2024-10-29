@@ -11,5 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findBySeller(User seller);
+
+    List<Item> findByTitleContainingOrDescriptionContaining(String keyword, String description);
 }
 
