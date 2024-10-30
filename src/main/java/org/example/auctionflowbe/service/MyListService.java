@@ -93,4 +93,15 @@ public class MyListService {
         return "찜 목록에서 제거되었습니다.";
     }
 
+    // 상품 찜 랭킹순 조회
+    public List<ItemResponse> getLikeRank(){
+
+        List<Item> items = itemRepository.findItemsOrderByLikeCount();
+
+        return items.stream()
+            .map(this::convertItemToItemResponse)
+            .toList();
+
+    }
+
 }

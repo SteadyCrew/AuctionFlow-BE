@@ -158,4 +158,10 @@ public class MyListController {
         return myListService.removeLike(user, item);
     }
 
+    // 상품 찜 랭킹순 조회
+    @GetMapping("/like/rank")
+    public List<ItemResponse> getLikeRankList(){
+        return myListService.getLikeRank();
+    }
+
 }
