@@ -45,7 +45,7 @@ public class Item {
     private LocalDateTime auctionEndTime;
     private String itemBidStatus; // 경매 진행 상태 =>  진행중(active) / 종료(end)
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     @JsonBackReference
     private Set<Bid> bids;
 
