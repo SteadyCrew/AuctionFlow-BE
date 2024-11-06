@@ -1,8 +1,11 @@
 package org.example.auctionflowbe.service;
 
+import org.example.auctionflowbe.dto.UserRegistrationDto;
 import org.example.auctionflowbe.entity.User;
 import org.example.auctionflowbe.repository.UserRepository;
+import org.example.auctionflowbe.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,26 +14,48 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public void saveOrUpdate(User user) {
-        User existingUser = userRepository.findByEmail(user.getEmail());
-        if (existingUser == null) {
-            userRepository.save(user);
-        } else {
-            existingUser.setNickname(user.getNickname());
-            existingUser.setProfileImageUrl(user.getProfileImageUrl());
-            existingUser.setAccessToken(user.getAccessToken());
-            existingUser.setRefreshToken(user.getRefreshToken());
-            existingUser.setTokenExpiry(user.getTokenExpiry());
-            userRepository.save(existingUser);
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    // 이메일로 사용자 존재 여부 확인
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    // 회원가입 처리
+    public void registerUser(UserRegistrationDto registrationDto) {
+        User user = new User(
+                registrationDto.getEmail(),
+                registrationDto.getNickname(),
+                passwordEncoder.encode(registrationDto.getPassword())
+        );
+        userRepository.save(user);
+    }
+
+    // 로그인 시 사용자 인증
+    public User authenticateUser(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user != null && passwordEncoder.matches(rawPassword, user.getPassword())) {
+            return user;
         }
+        return null;
     }
 
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+    // JWT 토큰을 통해 사용자 인증
+    public User authenticateUserByToken(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new RuntimeException("Invalid or expired JWT token");
+        }
+        String email = jwtTokenProvider.getSubjectFromToken(token);
+        User user = userRepository.findByEmail(email);
 
-    public User findTestUserById() {
-        Long userId = 26L; // 테스트용
-        return userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        return user;
     }
 }

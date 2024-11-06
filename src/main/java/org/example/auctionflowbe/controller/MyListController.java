@@ -14,13 +14,7 @@ import org.example.auctionflowbe.service.MyListService;
 import org.example.auctionflowbe.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,13 +30,11 @@ public class MyListController {
 
     @GetMapping("/mylist")
     public List<ItemResponse> myItemList(
-        @AuthenticationPrincipal OAuth2User oAuth2User,
+            @RequestHeader("Authorization") String authorizationHeader,
         @RequestParam(required = false) Integer statusType){
 
-        // String email = oAuth2User.getAttribute("email");
-        // User user = userService.findUserByEmail(email);
-
-        User user = userService.findTestUserById(); // 임시 인가
+        User user = userService.authenticateUserByToken
+                (authorizationHeader.replace("Bearer ", "")); // 토큰으로 사용자 인증
 
         if (user == null) {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
@@ -73,12 +65,11 @@ public class MyListController {
 
     @GetMapping("/sell")
     public List<ItemResponse> mySellList(
-        @AuthenticationPrincipal OAuth2User oAuth2User,
+            @RequestHeader("Authorization") String authorizationHeader,
         @RequestParam(required = false) Integer statusType) {
-        // String email = oAuth2User.getAttribute("email");
-        // User user = userService.findUserByEmail(email);
 
-        User user = userService.findTestUserById(); // 임시 인가
+        User user = userService.authenticateUserByToken
+                (authorizationHeader.replace("Bearer ", "")); // 토큰으로 사용자 인증
 
         if (user == null) {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
@@ -107,9 +98,11 @@ public class MyListController {
     // 찜 목록 조회
     @GetMapping("/like")
     public List<ItemResponse> myLikeList(
-        @AuthenticationPrincipal OAuth2User oAuth2User){
+            @RequestHeader("Authorization") String authorizationHeader){
 
-        User user = userService.findTestUserById(); // 임시 인가
+        User user = userService.authenticateUserByToken
+                (authorizationHeader.replace("Bearer ", "")); // 토큰으로 사용자 인증
+
 
         if (user == null) {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
@@ -120,10 +113,12 @@ public class MyListController {
     // 상품 찜하기
     @PostMapping("/like")
     public void addLike(
-        @AuthenticationPrincipal OAuth2User oAuth2User,
-        @RequestBody LikeRequest likeRequest) {
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody LikeRequest likeRequest) {
 
-        User user = userService.findTestUserById(); // 임시 인가
+        User user = userService.authenticateUserByToken
+                (authorizationHeader.replace("Bearer ", "")); // 토큰으로 사용자 인증
+
 
         if (user == null) {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
@@ -143,10 +138,12 @@ public class MyListController {
     // 상품 찜 삭제
     @DeleteMapping("/like")
     public String removeLike(
-        @AuthenticationPrincipal OAuth2User oAuth2User,
-        @RequestBody LikeRequest likeRequest) {
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody LikeRequest likeRequest) {
 
-        User user = userService.findTestUserById(); // 임시 인가
+        User user = userService.authenticateUserByToken
+                (authorizationHeader.replace("Bearer ", "")); // 토큰으로 사용자 인증
+
 
         if (user == null) {
             throw new RuntimeException("사용자를 찾을 수 없습니다.");

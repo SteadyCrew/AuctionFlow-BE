@@ -32,14 +32,12 @@ public class AuctionController {
     //사용자 인증 후 itemId와 bidAmount 를 받아서 입찰을 진행
     @PostMapping("/bid")
     public ResponseEntity<?> placeBid(
-            @AuthenticationPrincipal OAuth2User oauth2User,
+            @RequestHeader("Authorization") String authorizationHeader,
             @RequestParam Long itemId,
             @RequestParam BigDecimal bidAmount) {
 
-        // String email = oauth2User.getAttribute("email");
-        // User user = userService.findUserByEmail(email);
-
-        User user = userService.findTestUserById(); // 임시 인가
+        User user = userService.authenticateUserByToken
+                (authorizationHeader.replace("Bearer ", "")); // 토큰으로 사용자 인증
 
         if (user == null) {
             return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
@@ -56,12 +54,10 @@ public class AuctionController {
     //임의로 경매를 종료시키는 api
     @PostMapping("/end/{itemId}")
     public ResponseEntity<?> endAuction(
-            @AuthenticationPrincipal OAuth2User oauth2User,
+            @RequestHeader("Authorization") String authorizationHeader,
             @PathVariable Long itemId) {
         try {
-            // String email = oauth2User.getAttribute("email");
-            // User user = userService.findUserByEmail(email);
-            User user = userService.findTestUserById(); // 임시 인가
+            User user = userService.authenticateUserByToken(authorizationHeader.replace("Bearer ", "")); // 토큰으로 사용자 인증
 
             if (user == null) {
                 return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");

@@ -21,26 +21,18 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    private Long kakaoId;
+    @Column(nullable = false, unique = true)
     private String nickname;
-    private String profileImageUrl;
 
-    @Lob
-    private String accessToken;
-    @Lob
-    private String refreshToken;
-    private LocalDateTime tokenExpiry;
+    @Column(nullable = false)
+    private String password;
 
-    public User(String email, Long kakaoId, String nickname, String profileImageUrl, String accessToken, String refreshToken, LocalDateTime tokenExpiry) {
+    public User(String email, String nickname, String password) {
         this.email = email;
-        this.kakaoId = kakaoId;
         this.nickname = nickname;
-        this.profileImageUrl = profileImageUrl;
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-        this.tokenExpiry = tokenExpiry;
+        this.password = password;
     }
 }

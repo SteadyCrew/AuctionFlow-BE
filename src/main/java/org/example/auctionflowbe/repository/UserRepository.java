@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, String> {
     User findByEmail(String email);
-    User findByUserId(Long userId);
+
+    boolean existsByEmail(String email);
+
 
 }
