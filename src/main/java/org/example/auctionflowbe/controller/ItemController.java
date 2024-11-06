@@ -9,8 +9,6 @@ import org.example.auctionflowbe.service.ItemService;
 import org.example.auctionflowbe.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,44 +27,35 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<ItemResponse> createItem(
-            @AuthenticationPrincipal OAuth2User oauth2User,
-            @RequestPart("item") String itemJson, // JSON 데이터를 문자열로 받음
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestPart("item") String itemJson,
             @RequestPart("images") List<MultipartFile> imageFiles) throws IOException {
 
-        // JSON을 ItemCreateRequest 객체로 변환
+        User user = userService.authenticateUserByToken(authorizationHeader.replace("Bearer ", "")); // 토큰으로 사용자 인증
+
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-
         ItemCreateRequest itemCreateRequest = objectMapper.readValue(itemJson, ItemCreateRequest.class);
 
-        // 사용자 확인 및 처리
-        User user = userService.findTestUserById(); // 임시 인가
-
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
-
-        // 이미지 파일 설정
         itemCreateRequest.setProductImageFiles(imageFiles);
-
-        // 아이템 등록 처리
         ItemResponse itemResponse = itemService.registerItem(user, itemCreateRequest);
         return ResponseEntity.ok(itemResponse);
-
     }
 
+    // 아이템 ID로 조회
     @GetMapping("/{itemId}")
     public ItemResponse getItemById(@PathVariable Long itemId) {
         return itemService.getItemDtoById(itemId);
     }
 
+    // 모든 아이템 조회
     @GetMapping
     public ResponseEntity<List<ItemResponse>> getAllItems() {
         List<ItemResponse> items = itemService.getAllItemResponses();
         return ResponseEntity.ok(items);
     }
 
-    // 상품 검색
+    // 키워드로 아이템 검색
     @GetMapping("/search")
     public ResponseEntity<?> searchItems(@RequestParam String keyword) {
         List<ItemResponse> items = itemService.itemSearchByName(keyword);
