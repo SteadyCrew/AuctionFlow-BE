@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/items/**").permitAll()          // /items/** 경로의 GET 메서드는 인증 없이 접근 가능
                         .requestMatchers(HttpMethod.POST, "/items/**").authenticated()     // /items/** 경로의 POST 메서드는 인증 필요
                         .requestMatchers("/api/**").permitAll()                            // /api/** 경로는 인증 없이 접근 가능
+                        .requestMatchers("/").permitAll()
                         .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
                 )
                 // JWT 인증 필터를 UsernamePasswordAuthenticationFilter 앞에 추가하여 JWT 기반 인증 처리
