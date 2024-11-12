@@ -55,6 +55,21 @@ public class ItemController {
         return ResponseEntity.ok(items);
     }
 
+    // 판매중 아이템
+    @GetMapping("/selling")
+    public ResponseEntity<List<ItemResponse>> findActiveItems() {
+        List<ItemResponse> items = itemService.findActiveItems();
+        return ResponseEntity.ok(items);
+    }
+
+    // 판매중 아이템
+    @GetMapping("/end")
+    public ResponseEntity<List<ItemResponse>> findEndItems() {
+        List<ItemResponse> items = itemService.findEndItems();
+        return ResponseEntity.ok(items);
+    }
+
+
     // 키워드로 아이템 검색
     @GetMapping("/search")
     public ResponseEntity<?> searchItems(@RequestParam String keyword) {

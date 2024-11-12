@@ -87,6 +87,19 @@ public class ItemService {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다: " + itemId));
     }
+    // active 상태의 ItemResponse 리스트 반환
+    public List<ItemResponse> findActiveItems() {
+        return itemRepository.findByItemBidStatus("active").stream()
+                .map(this::mapToItemResponse)
+                .collect(Collectors.toList());
+    }
+
+    // end 상태의 ItemResponse 리스트 반환
+    public List<ItemResponse> findEndItems() {
+        return itemRepository.findByItemBidStatus("end").stream()
+                .map(this::mapToItemResponse)
+                .collect(Collectors.toList());
+    }
 
     // 모든 Item 엔티티를 반환하는 메서드
     public List<Item> getAllItems() {

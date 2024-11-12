@@ -6,6 +6,7 @@ import org.example.auctionflowbe.entity.Item;
 import org.example.auctionflowbe.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,5 +18,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("SELECT i FROM Item i LEFT JOIN i.likes l GROUP BY i ORDER BY COUNT(l) DESC")
     List<Item> findItemsOrderByLikeCount();
+
+    List<Item> findByItemBidStatus(String itemBidStatus);
+
 }
 
