@@ -40,7 +40,7 @@ public class MyListService {
     public ItemResponse convertItemToItemResponse(Item item) {
         ItemResponse itemResponse = new ItemResponse();
         itemResponse.setItemId(item.getItemId());
-        itemResponse.setCategoryId(item.getCategory().getCategoryId());
+        itemResponse.setCategoryName(item.getCategory().getName());
         itemResponse.setSellerId(item.getSeller().getUserId());
         itemResponse.setProductImageUrls(item.getProductImages().stream()
             .map(itemImage -> itemImage.getImageUrl())

@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 public class ItemResponse {
     private Long itemId;
-    private Long categoryId;
+    private String categoryName;
     private Long sellerId;
     private List<String> productImageUrls;  // 여러 이미지 URL을 담는 리스트로 변경
     private String title;
