@@ -7,6 +7,7 @@ import org.example.auctionflowbe.entity.User;
 import org.example.auctionflowbe.service.NotificationService;
 import org.example.auctionflowbe.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,5 +44,19 @@ public class NotificationController {
 
 		return responses;
 
+	}
+
+	@GetMapping("/{notificationId}")
+	public NotificationResponse getUserNotification(
+		@RequestHeader("Authorization") String authorizationHeader,
+		@PathVariable Long notificationId
+	){
+
+		User user = userService.authenticateUserByToken(
+			authorizationHeader.replace("Bearer ", ""));
+
+		NotificationResponse response = notificationService.getNotification(user, notificationId);
+
+		return response;
 	}
 }
