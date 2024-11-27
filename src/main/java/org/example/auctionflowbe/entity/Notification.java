@@ -8,10 +8,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 
 @Table(name = "notifications")
 @Entity
 @Getter
+@Setter
 public class Notification {
 
 	@Id
@@ -25,6 +27,6 @@ public class Notification {
 	private Boolean isRead;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 }

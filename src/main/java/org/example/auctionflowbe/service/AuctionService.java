@@ -4,9 +4,11 @@ import org.example.auctionflowbe.dto.BidDTO;
 import org.example.auctionflowbe.dto.BidNotification;
 import org.example.auctionflowbe.entity.Bid;
 import org.example.auctionflowbe.entity.Item;
+import org.example.auctionflowbe.entity.Notification;
 import org.example.auctionflowbe.entity.User;
 import org.example.auctionflowbe.repository.BidRepository;
 import org.example.auctionflowbe.repository.ItemRepository;
+import org.example.auctionflowbe.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 @Service
 public class AuctionService {
 
@@ -30,6 +35,7 @@ public class AuctionService {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
 
     @Transactional  // 트랜잭션을 시작하는 어노테이션
     public void placeBid(User user, Long itemId, BigDecimal bidAmount) {
@@ -74,6 +80,7 @@ public class AuctionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public String endAuction(Long itemId, User currentUser) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("아이템을 찾을 수 없습니다."));
