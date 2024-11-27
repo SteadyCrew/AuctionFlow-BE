@@ -2,7 +2,9 @@ package org.example.auctionflowbe.scheduler;
 
 import org.example.auctionflowbe.entity.Bid;
 import org.example.auctionflowbe.entity.Item;
+import org.example.auctionflowbe.entity.Notification;
 import org.example.auctionflowbe.service.ItemService;
+import org.example.auctionflowbe.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,6 +24,9 @@ public class AuctionScheduler {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Scheduled(cron = "0 * * * * ?")
     public void checkAuctionEndTimes() {
         List<Item> activeItems = itemService.getAllItems().stream()
@@ -40,6 +45,15 @@ public class AuctionScheduler {
                 // 최고 입찰자를 구매자로 설정
                 item.setBuyer(highestBid.get().getUser());
                 itemService.saveItem(item);
+
+                Notification notification = new Notification();
+                notification.setUser(highestBid.get().getUser());
+                notification.setTitle("경매 낙찰 알림");
+                notification.setContent(String.format("아이템 '%s'의 경매의 낙찰자입니다. 낙찰 금액: %s원",
+                    item.getTitle(), highestBid.get().getBidAmount()));
+                notification.setIsRead(false);
+
+                notificationService.saveNotification(notification);
 
                 String message = String.format("경매가 종료되었습니다. 최고 입찰자는 사용자 ID: %d, 입찰 금액: %s원입니다.",
                         highestBid.get().getUser().getUserId(),
