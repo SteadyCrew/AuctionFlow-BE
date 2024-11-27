@@ -1,5 +1,8 @@
 package org.example.auctionflowbe.controller;
 
+import java.util.List;
+
+import org.example.auctionflowbe.dto.NotificationResponse;
 import org.example.auctionflowbe.entity.User;
 import org.example.auctionflowbe.service.NotificationService;
 import org.example.auctionflowbe.service.UserService;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,5 +32,16 @@ public class NotificationController {
 		return count;
 	}
 
+	@GetMapping("/list")
+	public List<NotificationResponse> getNotifications(
+		@RequestHeader("Authorization") String authorizationHeader) {
 
+		User user = userService.authenticateUserByToken(
+			authorizationHeader.replace("Bearer ", ""));
+
+		List<NotificationResponse> responses = notificationService.getUserNotifications(user);
+
+		return responses;
+
+	}
 }

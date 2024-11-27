@@ -32,7 +32,8 @@ public class NotificationService {
 			.map(notification -> new NotificationResponse(
 				notification.getNotificationId(),
 				notification.getTitle(),
-				notification.getContent()
+				notification.getContent(),
+				notification.getIsRead()
 			))
 			.toList();
 	}

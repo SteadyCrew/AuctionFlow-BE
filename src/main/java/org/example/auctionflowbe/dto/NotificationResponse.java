@@ -4,6 +4,7 @@ public record NotificationResponse(
 
 	Long notificationId,
 	String title,
-	String content
+	String content,
+	Boolean isRead
 ) {
 }
