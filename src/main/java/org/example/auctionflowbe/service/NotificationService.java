@@ -1,6 +1,7 @@
 package org.example.auctionflowbe.service;
 
 import org.example.auctionflowbe.entity.Notification;
+import org.example.auctionflowbe.entity.User;
 import org.example.auctionflowbe.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +15,9 @@ public class NotificationService {
 
 	public void saveNotification(Notification notification) {
 		notificationRepository.save(notification);
+	}
+
+	public int getUnreadNotificationCount(User user) {
+		return notificationRepository.countUnreadNotificationsByUser(user);
 	}
 }
