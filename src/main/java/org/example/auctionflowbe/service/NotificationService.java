@@ -1,7 +1,6 @@
 package org.example.auctionflowbe.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.example.auctionflowbe.dto.NotificationResponse;
 import org.example.auctionflowbe.entity.Notification;
@@ -35,7 +34,8 @@ public class NotificationService {
 			.map(notification -> new NotificationResponse(
 				notification.getNotificationId(),
 				notification.getTitle(),
-				notification.getContent(),
+				notification.getItemTitle(),
+				notification.getPrice(),
 				notification.getIsRead()
 			))
 			.toList();
@@ -55,7 +55,8 @@ public class NotificationService {
 		return new NotificationResponse(
 			notification.getNotificationId(),
 			notification.getTitle(),
-			notification.getContent(),
+			notification.getItemTitle(),
+			notification.getPrice(),
 			notification.getIsRead()
 		);
 	}

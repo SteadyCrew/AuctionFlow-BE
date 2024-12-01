@@ -1,5 +1,7 @@
 package org.example.auctionflowbe.entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +24,9 @@ public class Notification {
 
 	private String title;
 
-	private String content;
+	private String itemTitle;
+
+	private BigDecimal price;
 
 	private Boolean isRead;
 

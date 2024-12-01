@@ -49,8 +49,10 @@ public class AuctionScheduler {
                 Notification notification = new Notification();
                 notification.setUser(highestBid.get().getUser());
                 notification.setTitle("경매 낙찰 알림");
-                notification.setContent(String.format("아이템 '%s'의 경매의 낙찰자입니다. 낙찰 금액: %s원",
-                    item.getTitle(), highestBid.get().getBidAmount()));
+                notification.setItemTitle(item.getTitle());
+                notification.setPrice(highestBid.get().getBidAmount());
+                // notification.setContent(String.format("itemtitle : '%s', price : %s",
+                //     item.getTitle(), highestBid.get().getBidAmount()));
                 notification.setIsRead(false);
 
                 notificationService.saveNotification(notification);
