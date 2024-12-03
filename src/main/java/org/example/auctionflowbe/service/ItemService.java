@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -124,6 +125,13 @@ public class ItemService {
         response.setProductStatus(item.getProductStatus());
         response.setDescription(item.getDescription());
         response.setStartingBid(item.getStartingBid());
+        // 현재 입찰 가격 계산 (최고 입찰가)
+        BigDecimal currentBid = item.getBids().stream()
+                .map(bid -> bid.getBidAmount())
+                .max(BigDecimal::compareTo) // 최고 입찰가 찾기
+                .orElse(item.getStartingBid()); // 입찰이 없으면 시작가
+        response.setCurrentBid(currentBid);
+
         response.setCreatedAt(item.getCreatedAt());
         response.setUpdatedAt(item.getUpdatedAt());
         response.setAuctionEndTime(item.getAuctionEndTime());

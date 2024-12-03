@@ -18,6 +18,7 @@ public class ItemResponse {
     private String productStatus;
     private String description;
     private BigDecimal startingBid;
+    private BigDecimal currentBid; // 현재 입찰 가격
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime auctionEndTime;
