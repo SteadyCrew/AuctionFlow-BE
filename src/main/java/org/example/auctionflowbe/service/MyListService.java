@@ -1,5 +1,6 @@
 package org.example.auctionflowbe.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,15 @@ public class MyListService {
         itemResponse.setProductStatus(item.getProductStatus());
         itemResponse.setDescription(item.getDescription());
         itemResponse.setStartingBid(item.getStartingBid());
+        // 입찰 정보가 없으면 startingBid를 currentBid로 설정
+        BigDecimal currentBid = item.getBids() == null || item.getBids().isEmpty()
+                ? item.getStartingBid()
+                : item.getBids().stream()
+                .map(bid -> bid.getBidAmount())
+                .max(BigDecimal::compareTo)
+                .orElse(item.getStartingBid());
+        itemResponse.setCurrentBid(currentBid);
+
         itemResponse.setCreatedAt(item.getCreatedAt());
         itemResponse.setUpdatedAt(item.getUpdatedAt());
         itemResponse.setAuctionEndTime(item.getAuctionEndTime());
