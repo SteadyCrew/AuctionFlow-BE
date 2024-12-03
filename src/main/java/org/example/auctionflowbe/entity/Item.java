@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
 
@@ -54,4 +55,10 @@ public class Item {
 
     @OneToMany(mappedBy = "item")
     private Set<Like> likes;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.updatedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+    }
 }
