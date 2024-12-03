@@ -125,11 +125,13 @@ public class ItemService {
         response.setProductStatus(item.getProductStatus());
         response.setDescription(item.getDescription());
         response.setStartingBid(item.getStartingBid());
-        // 현재 입찰 가격 계산 (최고 입찰가)
-        BigDecimal currentBid = item.getBids().stream()
+        // 입찰 정보가 없으면 startingBid를 currentBid로 설정
+        BigDecimal currentBid = item.getBids() == null || item.getBids().isEmpty()
+                ? item.getStartingBid()
+                : item.getBids().stream()
                 .map(bid -> bid.getBidAmount())
-                .max(BigDecimal::compareTo) // 최고 입찰가 찾기
-                .orElse(item.getStartingBid()); // 입찰이 없으면 시작가
+                .max(BigDecimal::compareTo)
+                .orElse(item.getStartingBid());
         response.setCurrentBid(currentBid);
 
         response.setCreatedAt(item.getCreatedAt());
